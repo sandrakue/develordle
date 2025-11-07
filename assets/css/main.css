@@ -16,7 +16,7 @@ form, label, legend, table, caption, tbody,
 tfoot, thead, tr, th, td, article, aside,
 canvas, details, embed, figure, figcaption,
 footer, header, hgroup, menu, nav, output, ruby,
-section, summary, time, mark, audio, video {
+section, summary, time, mark, audio, video, gameboard {
 	margin: 0;
 	padding: 0;
 	border: 0;
@@ -98,7 +98,7 @@ input, select, textarea {
 	}
 
 	body {
-		background: #312450;
+		background: #de7fb3;
 	}
 
 		body.is-preload *, body.is-preload *:before, body.is-preload *:after {
@@ -2268,6 +2268,10 @@ input, select, textarea {
 					width: calc(25% - 0.375em);
 				}
 
+                form > .fields > .field.fifth {
+                    width: calc(20% - 0.325em);
+                }
+
 		@media screen and (max-width: 480px) {
 
 			form > .fields {
@@ -2291,6 +2295,9 @@ input, select, textarea {
 					form > .fields > .field.quarter {
 						width: calc(100% - 1.5em);
 					}
+                    form > .fields > .field.fifth {
+                        width: calc(20% - 0.325em);
+                    }
 
 		}
 
@@ -2461,6 +2468,200 @@ input, select, textarea {
 	input[type="radio"] + label:before {
 		border-radius: 100%;
 	}
+
+	::-webkit-input-placeholder {
+		color: rgba(255, 255, 255, 0.35) !important;
+		opacity: 1.0;
+	}
+
+	:-moz-placeholder {
+		color: rgba(255, 255, 255, 0.35) !important;
+		opacity: 1.0;
+	}
+
+	::-moz-placeholder {
+		color: rgba(255, 255, 255, 0.35) !important;
+		opacity: 1.0;
+	}
+
+	:-ms-input-placeholder {
+		color: rgba(255, 255, 255, 0.35) !important;
+		opacity: 1.0;
+	}
+
+
+
+/* Gameboard */
+
+	gameboard {
+		margin: 0 0 2em 0;
+	}
+
+		gameboard > :last-child {
+			margin-bottom: 0;
+		}
+
+		gameboard > .fields {
+			display: -moz-flex;
+			display: -webkit-flex;
+			display: -ms-flex;
+			display: flex;
+			-moz-flex-wrap: wrap;
+			-webkit-flex-wrap: wrap;
+			-ms-flex-wrap: wrap;
+			flex-wrap: wrap;
+			width: calc(100% + 3em);
+			margin: -1.5em 0 2em -1.5em;
+		}
+
+			gameboard > .fields > .field {
+				-moz-flex-grow: 0;
+				-webkit-flex-grow: 0;
+				-ms-flex-grow: 0;
+				flex-grow: 0;
+				-moz-flex-shrink: 0;
+				-webkit-flex-shrink: 0;
+				-ms-flex-shrink: 0;
+				flex-shrink: 0;
+				padding: 1.5em 0 0 1.5em;
+				width: calc(100% - 1.5em);
+			}
+
+				gameboard > .fields > .field.half {
+					width: calc(50% - 0.75em);
+				}
+
+				gameboard > .fields > .field.third {
+					width: calc(100%/3 - 0.5em);
+				}
+
+				gameboard > .fields > .field.quarter {
+					width: calc(25% - 0.375em);
+				}
+
+                gameboard > .fields > .field.fifth {
+                    width: calc(20% - 0.325em);
+                }
+
+		@media screen and (max-width: 480px) {
+
+			gameboard > .fields {
+				width: calc(100% + 3em);
+				margin: -1.5em 0 2em -1.5em;
+			}
+
+				gameboard > .fields > .field {
+					padding: 1.5em 0 0 1.5em;
+					width: calc(100% - 1.5em);
+				}
+
+					gameboard > .fields > .field.half {
+						width: calc(100% - 1.5em);
+					}
+
+					gameboard > .fields > .field.third {
+						width: calc(100% - 1.5em);
+					}
+
+					gameboard > .fields > .field.quarter {
+						width: calc(100% - 1.5em);
+					}
+                    gameboard > .fields > .field.fifth {
+                        width: calc(20% - 0.325em);
+                    }
+
+		}
+
+	label {
+		color: #ffffff;
+		font-weight: bold;
+		line-height: 1.5;
+		margin: 0 0 0.7em 0;
+		display: block;
+		font-size: 1.1em;
+	}
+
+	input[type="text"],
+	input[type="password"],
+	input[type="email"],
+	input[type="tel"],
+	input[type="letter"],
+	select,
+	textarea {
+		-moz-appearance: none;
+		-webkit-appearance: none;
+		-ms-appearance: none;
+		appearance: none;
+		background: rgba(255, 255, 255, 0.05);
+		border-radius: 0.25em;
+		border: none;
+		border: solid 1px rgba(255, 255, 255, 0.15);
+		color: inherit;
+		display: block;
+		outline: 0;
+		padding: 0 1em;
+		text-decoration: none;
+		width: 100%;
+	}
+
+		input[type="text"]:invalid,
+		input[type="password"]:invalid,
+		input[type="email"]:invalid,
+		input[type="tel"]:invalid,
+		input[type="letter"]:invalid,
+		select:invalid,
+		textarea:invalid {
+			box-shadow: none;
+		}
+
+		input[type="text"]:focus,
+		input[type="password"]:focus,
+		input[type="email"]:focus,
+		input[type="tel"]:focus,
+		input[type="letter"]:focus,
+		select:focus,
+		textarea:focus {
+			border-color: #ffffff;
+			box-shadow: 0 0 0 1px #ffffff;
+		}
+
+	select {
+		background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' preserveAspectRatio='none' viewBox='0 0 40 40'%3E%3Cpath d='M9.4,12.3l10.4,10.4l10.4-10.4c0.2-0.2,0.5-0.4,0.9-0.4c0.3,0,0.6,0.1,0.9,0.4l3.3,3.3c0.2,0.2,0.4,0.5,0.4,0.9 c0,0.4-0.1,0.6-0.4,0.9L20.7,31.9c-0.2,0.2-0.5,0.4-0.9,0.4c-0.3,0-0.6-0.1-0.9-0.4L4.3,17.3c-0.2-0.2-0.4-0.5-0.4-0.9 c0-0.4,0.1-0.6,0.4-0.9l3.3-3.3c0.2-0.2,0.5-0.4,0.9-0.4S9.1,12.1,9.4,12.3z' fill='rgba(255, 255, 255, 0.15)' /%3E%3C/svg%3E");
+		background-size: 1.25rem;
+		background-repeat: no-repeat;
+		background-position: calc(100% - 1rem) center;
+		height: 2.75em;
+		padding-right: 2.75em;
+		text-overflow: ellipsis;
+	}
+
+		select option {
+			color: #ffffff;
+			background: #312450;
+		}
+
+		select:focus::-ms-value {
+			background-color: transparent;
+		}
+
+		select::-ms-expand {
+			display: none;
+		}
+
+	input[type="text"],
+	input[type="password"],
+	input[type="email"],
+	select {
+		height: 2.75em;
+	}
+
+	textarea {
+		padding: 0.75em 1em;
+	}
+
+		body.is-ie textarea {
+			min-height: 10em;
+		}
 
 	::-webkit-input-placeholder {
 		color: rgba(255, 255, 255, 0.35) !important;
@@ -3240,7 +3441,7 @@ input, select, textarea {
 		}
 
 		.wrapper.style1 {
-			background-color: #5e42a6;
+			background-color: #fc8feb;
 		}
 
 		.wrapper.style1-alt {
@@ -3524,7 +3725,7 @@ input, select, textarea {
 
 	#sidebar {
 		padding: 2.5em 2.5em 0.5em 2.5em ;
-		background: #312450;
+		background: #620038f9;
 		cursor: default;
 		height: 100vh;
 		left: 0;

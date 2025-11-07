@@ -1,64 +1,452 @@
 <!DOCTYPE HTML>
 <!--
-	Hyperspace by HTML5 UP
-	html5up.net | @ajlkn
-	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+	HTML5 DOCTYPE declaration - tells browser to use HTML5 standards
 -->
 <html>
 	<head>
-		<title>Hyperspace by HTML5 UP</title>
+		<!-- HEAD SECTION
+		     Contains metadata and resources that don't appear on the page
+		     but are essential for the page to work properly -->
+		
+		<title>Develordle - Developer Wordle</title>
+		<!-- Title shown in browser tab -->
+		
 		<meta charset="utf-8" />
+		<!-- Character encoding: UTF-8 supports all languages and special characters -->
+		
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<!-- Viewport: Controls how page scales on mobile devices
+		     width=device-width: Match device width
+		     initial-scale=1: Start at 100% zoom
+		     user-scalable=no: Prevent pinch-to-zoom (common for games) -->
+		
 		<link rel="stylesheet" href="assets/css/main.css" />
+		<!-- Links to the main CSS file (template styles) -->
+		
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<!-- noscript: CSS that loads ONLY if JavaScript is disabled
+		     Provides fallback styles for users without JS -->
+		<style>
+			/* ========================================
+			   CUSTOM WORDLE GAME STYLES
+			   All CSS below is custom for the game
+			   ======================================== */
+			
+			/* COMPACT INTRO SECTION - Make game fit in viewport */
+			#intro .inner {
+				padding: 2em 3em 2em 3em !important;  /* Reduce padding significantly */
+			}
+			
+			#intro h1 {
+				font-size: 2em !important;            /* Smaller title */
+				margin: 0 0 0.3em 0 !important;       /* Less margin */
+			}
+			
+			#intro h2 {
+				font-size: 1.1em !important;          /* Smaller subtitle */
+				margin: 0 0 1em 0 !important;         /* Less margin */
+			}
+			
+			/* Remove fullscreen behavior from intro */
+			#intro.wrapper.fullscreen {
+				min-height: auto !important;          /* Don't force full viewport height */
+			}
+			
+			/* GAME CONTAINER
+			   This wraps the entire game (board + keyboard + controls) */
+			.game-container {
+				max-width: 500px;        /* Maximum width: won't grow beyond 500px */
+				margin: 0 auto;          /* "0" = no top/bottom margin
+				                            "auto" = automatically center horizontally
+				                            This centers the game on the page! */
+				padding: 10px;           /* Reduced padding for more compact fit */
+			}
+
+			/* GAME BOARD
+			   Contains all 6 rows of tiles */
+			.game-board {
+				display: flex;              /* Enables flexbox layout */
+				flex-direction: column;     /* Stack children vertically (rows on top of each other) */
+				gap: 5px;                   /* 5px space between each row */
+				margin-bottom: 20px;        /* 20px space below the board (before keyboard) */
+			}
+
+			/* ROW
+			   Each row contains 5 letter tiles */
+			.row {
+				display: flex;              /* Enables flexbox layout */
+				gap: 5px;                   /* 5px space between each tile */
+				justify-content: center;    /* Center the tiles horizontally */
+			}
+
+			/* TILE
+			   Individual letter box in the game board */
+			.tile {
+				width: 50px;                       /* Smaller width for better fit */
+				height: 50px;                      /* Smaller height (still square) */
+				border: 2px solid #3a3a3c;         /* 2px wide border, solid style, dark gray color */
+				display: flex !important;          /* Enables flexbox for centering - !important overrides template CSS */
+				align-items: center !important;    /* Centers content vertically - !important ensures this works */
+				justify-content: center !important; /* Centers content horizontally - !important takes priority */
+				font-size: 2rem;                   /* 2rem = 2 times the root font size (large text) */
+				font-weight: bold;                 /* Makes text bold */
+				text-transform: uppercase;         /* Converts all text to UPPERCASE */
+				background-color: transparent;     /* No background color (initially) */
+				color: #ffffff;                    /* White text color */
+				transition: all 0.3s ease;         /* Smoothly animate ALL property changes over 0.3 seconds
+				                                      "ease" = start slow, speed up, slow down at end */
+				line-height: 1;                    /* Reset line-height to 1 (normal) for flexbox centering */
+				padding: 0 !important;             /* Remove template's 1.5em left padding that pushes letters right */
+			}
+
+			/* TILE STATES
+			   Different classes applied based on game logic */
+			
+			.tile.filled {
+				border-color: #565758;             /* Slightly lighter border when tile has a letter */
+			}
+
+			.tile.correct {
+				background-color: #538d4e;         /* Green background = correct letter, correct position */
+				border-color: #538d4e;             /* Match border to background */
+				animation: flip 0.5s ease;         /* Play the "flip" animation over 0.5 seconds */
+			}
+
+			.tile.present {
+				background-color: #b59f3b;         /* Yellow/gold = correct letter, wrong position */
+				border-color: #b59f3b;             /* Match border to background */
+				animation: flip 0.5s ease;         /* Play the "flip" animation */
+			}
+
+			.tile.absent {
+				background-color: #3a3a3c;         /* Dark gray = letter not in word */
+				border-color: #3a3a3c;             /* Match border to background */
+				animation: flip 0.5s ease;         /* Play the "flip" animation */
+			}
+
+			/* FLIP ANIMATION
+			   Defines how tiles flip when revealed
+			   @keyframes creates a named animation that can be reused */
+			@keyframes flip {
+				0% {                               /* At start (0% through animation) */
+					transform: rotateX(0);         /* No rotation */
+				}
+				50% {                              /* Halfway through (50%) */
+					transform: rotateX(90deg);     /* Rotate 90 degrees on X axis (flip forward) */
+				}
+				100% {                             /* At end (100%) */
+					transform: rotateX(0);         /* Back to no rotation (flip back) */
+				}
+			}
+
+			/* GAME CONTROLS
+			   Area with the "New Game" button */
+			.game-controls {
+				text-align: center;                /* Center the button */
+				margin-top: 20px;                  /* 20px space above */
+			}
+
+			/* MESSAGE
+			   Displays game status messages (win/lose/errors) */
+			.message {
+				text-align: center;                /* Center the text */
+				font-size: 1.2rem;                 /* Slightly larger than normal text */
+				margin: 20px 0;                    /* 20px space above and below, 0 on sides */
+				min-height: 30px;                  /* Always takes up at least 30px (prevents layout shift) */
+				font-weight: bold;                 /* Bold text */
+			}
+
+			/* MESSAGE STATES */
+			.message.win {
+				color: #538d4e;                    /* Green for win message */
+			}
+
+			.message.lose {
+				color: #b59f3b;                    /* Yellow/gold for lose message */
+			}
+
+			/* KEYBOARD
+			   On-screen keyboard container */
+			.keyboard {
+				max-width: 500px;                  /* Don't exceed 500px width */
+				margin: 20px auto;                 /* 20px top/bottom margin, auto centers horizontally */
+			}
+
+			/* KEYBOARD ROW
+			   Each row of keys (like QWERTY, ASDF, etc.) */
+			.keyboard-row {
+				display: flex;                     /* Arrange keys horizontally */
+				gap: 6px;                          /* 6px space between keys */
+				justify-content: center;           /* Center the keys in the row */
+				margin-bottom: 8px;                /* 8px space below each row */
+			}
+
+			/* KEY
+			   Individual keyboard button */
+			.key {
+				min-width: 35px;                   /* Smaller minimum width */
+				height: 48px;                      /* Reduced height */
+				border-radius: 4px;                /* Slightly rounded corners (4px radius) */
+				border: none;                      /* No border */
+				background-color: #e126eebc;         /* Medium gray background */
+				color: #ffffff;                    /* White text */
+				font-weight: bold;                 /* Bold text */
+				font-size: 0.9rem;                 /* Slightly smaller than normal text */
+				cursor: pointer;                   /* Changes cursor to hand/pointer on hover */
+				transition: background-color 0.2s; /* Smoothly change background color over 0.2 seconds */
+				text-transform: uppercase;         /* Make text uppercase */
+				display: flex;                     /* Use flexbox for centering */
+				align-items: center;               /* Center vertically */
+				justify-content: center;           /* Center horizontally */
+				padding: 0;                        /* No padding (buttons have default padding) */
+				text-align: center;                /* Center text */
+			}
+
+			/* KEY HOVER STATE
+			   Changes appearance when mouse hovers over it */
+			.key:hover {
+				background-color: #505050;         /* Darker gray on hover (visual feedback) */
+			}
+
+			/* WIDE KEY
+			   For special keys like ENTER and BACK */
+			.key.wide {
+				min-width: 80px;                   /* Reduced width for better fit */
+			}
+
+			/* KEY STATES
+			   Colors change based on letter status in the game */
+			.key.correct {
+				background-color: #538d4e;         /* Green = letter is correct and in right place */
+			}
+
+			.key.present {
+				background-color: #b59f3b;         /* Yellow = letter in word but wrong place */
+			}
+
+			.key.absent {
+				background-color: #3a3a3c;         /* Dark gray = letter not in word */
+			}
+
+			/* HELP BUTTON - Question mark icon */
+			.help-button {
+				position: absolute;
+				top: 10px;
+				right: 10px;
+				width: 36px;
+				height: 36px;
+				border-radius: 50%;
+				background-color: rgba(255, 255, 255, 0.2);
+				border: 2px solid rgba(255, 255, 255, 0.4);
+				color: #ffffff;
+				font-size: 20px;
+				font-weight: bold;
+				cursor: pointer;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				transition: all 0.3s ease;
+				z-index: 100;
+			}
+
+			.help-button:hover {
+				background-color: rgba(255, 255, 255, 0.3);
+				transform: scale(1.1);
+			}
+
+			/* MODAL OVERLAY - Dark background when modal is open */
+			.modal-overlay {
+				display: none;
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background-color: rgba(0, 0, 0, 0.8);
+				z-index: 1000;
+				justify-content: center;
+				align-items: center;
+			}
+
+			.modal-overlay.active {
+				display: flex;
+			}
+
+			/* MODAL CONTENT - The actual popup box */
+			.modal-content {
+				background-color: #312450;
+				border-radius: 10px;
+				padding: 30px;
+				max-width: 500px;
+				max-height: 80vh;
+				overflow-y: auto;
+				position: relative;
+				box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+			}
+
+			/* CLOSE BUTTON - X in top right of modal */
+			.close-button {
+				position: absolute;
+				top: 15px;
+				right: 15px;
+				width: 30px;
+				height: 30px;
+				border: none;
+				background: none;
+				color: #ffffff;
+				font-size: 24px;
+				cursor: pointer;
+				transition: transform 0.2s ease;
+			}
+
+			.close-button:hover {
+				transform: scale(1.2);
+			}
+
+			/* MODAL HEADING */
+			.modal-content h2 {
+				color: #ffffff;
+				margin-bottom: 20px;
+				font-size: 1.8em;
+			}
+
+			/* MODAL RULES */
+			.modal-content .rule-item {
+				margin-bottom: 20px;
+				padding-left: 30px;
+				position: relative;
+			}
+
+			.modal-content .rule-item .icon {
+				position: absolute;
+				left: 0;
+				top: 0;
+				font-size: 20px;
+			}
+
+			.modal-content .rule-item h3 {
+				color: #ffffff;
+				font-size: 1.1em;
+				margin-bottom: 5px;
+			}
+
+			.modal-content .rule-item p {
+				color: rgba(255, 255, 255, 0.7);
+				font-size: 0.9em;
+				margin: 0;
+			}
+
+			/* Position game container for help button */
+			.game-container {
+				position: relative;
+			}
+		</style>
 	</head>
 	<body class="is-preload">
+		<!-- BODY TAG
+		     class="is-preload": Used by main.js to show loading animation
+		     This class is removed once page fully loads -->
 
-		<!-- Sidebar -->
-			<section id="sidebar">
+		<!-- ============================================
+		     SIDEBAR NAVIGATION
+		     Fixed navigation menu on the left side
+		     ============================================ -->
+		<section id="sidebar">
+			<!-- id="sidebar": JavaScript uses this to find and control the sidebar -->
+			
+			<div class="inner">
+				<!-- Container for sidebar content -->
+				
+				<nav>
+					<!-- nav: Semantic HTML5 tag indicating navigation links -->
+					<ul>
+						<!-- Unordered list of navigation links -->
+						<li><a href="#intro">Play Develordle</a></li>
+						<!-- href="#intro": Links to element with id="intro" (smooth scroll) -->
+						
+						<li><a href="#one">About</a></li>
+						<li><a href="#two">How to Play</a></li>
+						<li><a href="#three">Contact</a></li>
+					</ul>
+				</nav>
+			</div>
+		</section>
+
+		<!-- ============================================
+		     WRAPPER
+		     Contains all main page content (everything except sidebar)
+		     ============================================ -->
+		<div id="wrapper">
+
+			<!-- ============================================
+			     INTRO SECTION - THE GAME!
+			     This is where the Wordle game lives
+			     ============================================ -->
+			<section id="intro" class="wrapper style1 fade-up">
+				<!-- id="intro": Allows sidebar link to jump here
+				     class="wrapper style1 fade-up": Template classes for styling and animations -->
+				
 				<div class="inner">
-					<nav>
-						<ul>
-							<li><a href="#intro">Welcome to Devwordle</a></li>
-							<li><a href="#one">Who we are</a></li>
-							<li><a href="#two">What we do</a></li>
-							<li><a href="#three">Get in touch</a></li>
-						</ul>
-					</nav>
+					<!-- Container for content with proper spacing -->
+					
+					<h1>Develordle</h1>
+					<!-- h1: Main heading - largest text on page -->
+					
+					<h2>Guess the developer word of the day!</h2>
+					<!-- h2: Subheading - smaller than h1 -->
+					
+					<div class="game-container">
+						<!-- Custom container for the entire game -->
+						
+						<!-- HELP BUTTON - Question mark icon -->
+						<button class="help-button" id="helpBtn" aria-label="How to Play">?</button>
+						
+						<div class="message" id="message"></div>
+						<!-- Message area for game status (win/lose/errors)
+						     id="message": JavaScript uses this to update the text
+						     Empty initially - filled by JavaScript -->
+						
+						<div class="game-board" id="gameBoard">
+							<!-- Game board container
+							     id="gameBoard": JavaScript uses this to create the tile grid
+							     Content is dynamically generated - see wordle.js -->
+							<!-- Rows will be generated by JavaScript -->
+						</div>
+
+						<div class="keyboard" id="keyboard">
+							<!-- On-screen keyboard
+							     id="keyboard": JavaScript uses this to create clickable keys
+							     Content is dynamically generated - see wordle.js -->
+							<!-- Keyboard will be generated by JavaScript -->
+						</div>
+
+						<div class="game-controls">
+							<!-- Container for game control buttons -->
+							<ul class="actions">
+								<!-- Template class for button lists -->
+								<li><button class="button" id="newGameBtn">New Game</button></li>
+								<!-- button: Clickable button element
+								     id="newGameBtn": JavaScript uses this to reset the game
+								     class="button": Template class for button styling -->
+							</ul>
+						</div>
+					</div>
 				</div>
 			</section>
 
-		<!-- Wrapper -->
-			<div id="wrapper">
-
-				<!-- Intro -->
-					<section id="intro" class="wrapper style1 fullscreen fade-up">
-						<div class="inner">
-							<h1>Devwordle</h1>
-							<h2>guess the word of the day - developer style :)</h2>
-							<div class="field">
-								<label for="guess">Guess</label>
-								<textarea name="guess" id="guess" rows="5" columns="5"></textarea>
-							</div>
-							<p>Just another fine responsive site template designed by <a href="http://html5up.net">HTML5 UP</a><br />
-							and released for free under the <a href="http://html5up.net/license">Creative Commons</a>.</p>
-							<ul class="actions">
-								<li><a href="#one" class="button scrolly">Learn more</a></li>
-							</ul>
-						</div>
-					</section>
-
-				<!-- One -->
-					<section id="one" class="wrapper style2 spotlights">
+			<!-- ============================================
+			     ABOUT SECTION
+			     Information about the game
+			     ============================================ -->
+			<section id="one" class="wrapper style2 spotlights">
+				<!-- id="one": Allows sidebar link to jump here
+				     class="spotlights": Template class for image + text sections -->
 						<section>
 							<a href="#" class="image"><img src="images/pic01.jpg" alt="" data-position="center center" /></a>
 							<div class="content">
 								<div class="inner">
-									<h2>Sed ipsum dolor</h2>
-									<p>Phasellus convallis elit id ullamcorper pulvinar. Duis aliquam turpis mauris, eu ultricies erat malesuada quis. Aliquam dapibus.</p>
-									<ul class="actions">
-										<li><a href="generic.html" class="button">Learn more</a></li>
-									</ul>
+									<h2>Developer Themed</h2>
+									<p>All words are related to programming, web development, and technology. Test your knowledge of developer terminology!</p>
 								</div>
 							</div>
 						</section>
@@ -66,11 +454,8 @@
 							<a href="#" class="image"><img src="images/pic02.jpg" alt="" data-position="top center" /></a>
 							<div class="content">
 								<div class="inner">
-									<h2>Feugiat consequat</h2>
-									<p>Phasellus convallis elit id ullamcorper pulvinar. Duis aliquam turpis mauris, eu ultricies erat malesuada quis. Aliquam dapibus.</p>
-									<ul class="actions">
-										<li><a href="generic.html" class="button">Learn more</a></li>
-									</ul>
+									<h2>Daily Challenge</h2>
+									<p>A new word every day. Challenge yourself and improve your developer vocabulary.</p>
 								</div>
 							</div>
 						</section>
@@ -78,67 +463,71 @@
 							<a href="#" class="image"><img src="images/pic03.jpg" alt="" data-position="25% 25%" /></a>
 							<div class="content">
 								<div class="inner">
-									<h2>Ultricies aliquam</h2>
-									<p>Phasellus convallis elit id ullamcorper pulvinar. Duis aliquam turpis mauris, eu ultricies erat malesuada quis. Aliquam dapibus.</p>
-									<ul class="actions">
-										<li><a href="generic.html" class="button">Learn more</a></li>
-									</ul>
+									<h2>Share Your Score</h2>
+									<p>Compete with other developers and share your results with the community.</p>
 								</div>
 							</div>
 						</section>
 					</section>
 
-				<!-- Two -->
-					<section id="two" class="wrapper style3 fade-up">
-						<div class="inner">
-							<h2>What we do</h2>
-							<p>Phasellus convallis elit id ullamcorper pulvinar. Duis aliquam turpis mauris, eu ultricies erat malesuada quis. Aliquam dapibus, lacus eget hendrerit bibendum, urna est aliquam sem, sit amet imperdiet est velit quis lorem.</p>
-							<div class="features">
+			<!-- ============================================
+			     HOW TO PLAY SECTION
+			     Instructions and rules
+			     ============================================ -->
+			<section id="two" class="wrapper style3 fade-up">
+				<div class="inner">
+					<h2>How to Play</h2>
+					<div class="features">
+						<!-- Template class for icon grid layout -->
+								<section>
+									<span class="icon solid major fa-keyboard"></span>
+									<h3>Type Your Guess</h3>
+									<p>Enter a 5-letter word related to development and programming.</p>
+								</section>
+								<section>
+									<span class="icon solid major fa-check" style="color: #538d4e;"></span>
+									<h3>Green = Correct</h3>
+									<p>Letter is in the word and in the correct position.</p>
+								</section>
+								<section>
+									<span class="icon solid major fa-circle" style="color: #b59f3b;"></span>
+									<h3>Yellow = Wrong Position</h3>
+									<p>Letter is in the word but in the wrong position.</p>
+								</section>
+								<section>
+									<span class="icon solid major fa-times" style="color: #3a3a3c;"></span>
+									<h3>Gray = Not in Word</h3>
+									<p>Letter is not in the word at all.</p>
+								</section>
+								<section>
+									<span class="icon solid major fa-trophy"></span>
+									<h3>6 Attempts</h3>
+									<p>You have 6 chances to guess the correct word.</p>
+								</section>
 								<section>
 									<span class="icon solid major fa-code"></span>
-									<h3>Lorem ipsum amet</h3>
-									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
-								</section>
-								<section>
-									<span class="icon solid major fa-lock"></span>
-									<h3>Aliquam sed nullam</h3>
-									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
-								</section>
-								<section>
-									<span class="icon solid major fa-cog"></span>
-									<h3>Sed erat ullam corper</h3>
-									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
-								</section>
-								<section>
-									<span class="icon solid major fa-desktop"></span>
-									<h3>Veroeros quis lorem</h3>
-									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
-								</section>
-								<section>
-									<span class="icon solid major fa-link"></span>
-									<h3>Urna quis bibendum</h3>
-									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
-								</section>
-								<section>
-									<span class="icon major fa-gem"></span>
-									<h3>Aliquam urna dapibus</h3>
-									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
+									<h3>Developer Terms</h3>
+									<p>All words are tech and programming related!</p>
 								</section>
 							</div>
-							<ul class="actions">
-								<li><a href="generic.html" class="button">Learn more</a></li>
-							</ul>
 						</div>
 					</section>
 
-				<!-- Three -->
-					<section id="three" class="wrapper style1 fade-up">
-						<div class="inner">
-							<h2>Get in touch</h2>
-							<p>Phasellus convallis elit id ullamcorper pulvinar. Duis aliquam turpis mauris, eu ultricies erat malesuada quis. Aliquam dapibus, lacus eget hendrerit bibendum, urna est aliquam sem, sit amet imperdiet est velit quis lorem.</p>
-							<div class="split style1">
-								<section>
-									<form method="post" action="#">
+			<!-- ============================================
+			     CONTACT SECTION
+			     Contact form (currently non-functional)
+			     ============================================ -->
+			<section id="three" class="wrapper style1 fade-up">
+				<div class="inner">
+					<h2>Get in touch</h2>
+					<p>Have suggestions for words or features? Let us know!</p>
+					<div class="split style1">
+						<!-- Template class for side-by-side layout -->
+						<section>
+							<form method="post" action="#">
+								<!-- form: Collects user input
+								     method="post": How to send data (more secure than "get")
+								     action="#": Where to send data (currently nowhere - placeholder) -->
 										<div class="fields">
 											<div class="field half">
 												<label for="name">Name</label>
@@ -161,26 +550,10 @@
 								<section>
 									<ul class="contact">
 										<li>
-											<h3>Address</h3>
-											<span>12345 Somewhere Road #654<br />
-											Nashville, TN 00000-0000<br />
-											USA</span>
-										</li>
-										<li>
-											<h3>Email</h3>
-											<a href="#">user@untitled.tld</a>
-										</li>
-										<li>
-											<h3>Phone</h3>
-											<span>(000) 000-0000</span>
-										</li>
-										<li>
 											<h3>Social</h3>
 											<ul class="icons">
 												<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-												<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
 												<li><a href="#" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
-												<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
 												<li><a href="#" class="icon brands fa-linkedin-in"><span class="label">LinkedIn</span></a></li>
 											</ul>
 										</li>
@@ -192,23 +565,129 @@
 
 			</div>
 
-		<!-- Footer -->
-			<footer id="footer" class="wrapper style1-alt">
-				<div class="inner">
-					<ul class="menu">
-						<li>&copy; Untitled. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
-					</ul>
+		<!-- ============================================
+		     HELP MODAL - Popup with game instructions
+		     ============================================ -->
+		<div class="modal-overlay" id="helpModal">
+			<div class="modal-content">
+				<button class="close-button" id="closeModal" aria-label="Close">&times;</button>
+				<h2>How to Play</h2>
+				
+				<div class="rule-item">
+					<span class="icon">⌨️</span>
+					<h3>Type Your Guess</h3>
+					<p>Enter a 5-letter word related to development and programming.</p>
 				</div>
-			</footer>
+				
+				<div class="rule-item">
+					<span class="icon" style="color: #538d4e;">✓</span>
+					<h3>Green = Correct</h3>
+					<p>Letter is in the word and in the correct position.</p>
+				</div>
+				
+				<div class="rule-item">
+					<span class="icon" style="color: #b59f3b;">●</span>
+					<h3>Yellow = Wrong Position</h3>
+					<p>Letter is in the word but in the wrong position.</p>
+				</div>
+				
+				<div class="rule-item">
+					<span class="icon" style="color: #3a3a3c;">✕</span>
+					<h3>Gray = Not in Word</h3>
+					<p>Letter is not in the word at all.</p>
+				</div>
+				
+				<div class="rule-item">
+					<span class="icon">🏆</span>
+					<h3>6 Attempts</h3>
+					<p>You have 6 chances to guess the correct word.</p>
+				</div>
+				
+				<div class="rule-item">
+					<span class="icon">💻</span>
+					<h3>Developer Terms</h3>
+					<p>All words are tech and programming related!</p>
+				</div>
+			</div>
+		</div>
 
-		<!-- Scripts -->
-			<script src="assets/js/jquery.min.js"></script>
-			<script src="assets/js/jquery.scrollex.min.js"></script>
-			<script src="assets/js/jquery.scrolly.min.js"></script>
-			<script src="assets/js/browser.min.js"></script>
-			<script src="assets/js/breakpoints.min.js"></script>
-			<script src="assets/js/util.js"></script>
-			<script src="assets/js/main.js"></script>
+		<!-- ============================================
+		     FOOTER
+		     Bottom of the page
+		     ============================================ -->
+		<footer id="footer" class="wrapper style1-alt">
+			<!-- footer: Semantic HTML5 tag for page footer -->
+			<div class="inner">
+				<ul class="menu">
+					<li>&copy; Develordle 2025. All rights reserved.</li>
+					<!-- &copy; is HTML entity for © symbol -->
+				</ul>
+			</div>
+		</footer>
+
+		<!-- ============================================
+		     JAVASCRIPT FILES
+		     Loaded at end of body for better performance
+		     (Page content loads first, then interactivity)
+		     ============================================ -->
+		
+		<!-- TEMPLATE LIBRARIES (came with HTML5 UP template) -->
+		<script src="assets/js/jquery.min.js"></script>
+		<!-- jQuery: Popular library for DOM manipulation (used by template) -->
+		
+		<script src="assets/js/jquery.scrollex.min.js"></script>
+		<!-- Scrollex: Detects when elements scroll into view for animations -->
+		
+		<script src="assets/js/jquery.scrolly.min.js"></script>
+		<!-- Scrolly: Smooth scrolling for anchor links -->
+		
+		<script src="assets/js/browser.min.js"></script>
+		<!-- Browser detection: Identifies user's browser for compatibility -->
+		
+		<script src="assets/js/breakpoints.min.js"></script>
+		<!-- Breakpoints: Manages responsive design breakpoints -->
+		
+		<script src="assets/js/util.js"></script>
+		<!-- Utility functions: Helper functions used by template -->
+		
+		<script src="assets/js/main.js"></script>
+		<!-- Template main JavaScript: Sidebar, scrolling, animations -->
+		
+		<!-- YOUR CUSTOM GAME CODE -->
+		<script src="assets/js/wordle.js"></script>
+		<!-- Wordle game logic: All the game functionality you built! -->
+
+		<!-- HELP MODAL FUNCTIONALITY -->
+		<script>
+			// Get modal elements
+			const helpBtn = document.getElementById('helpBtn');
+			const helpModal = document.getElementById('helpModal');
+			const closeModal = document.getElementById('closeModal');
+
+			// Open modal when help button is clicked
+			helpBtn.addEventListener('click', function() {
+				helpModal.classList.add('active');
+			});
+
+			// Close modal when X button is clicked
+			closeModal.addEventListener('click', function() {
+				helpModal.classList.remove('active');
+			});
+
+			// Close modal when clicking outside the modal content
+			helpModal.addEventListener('click', function(event) {
+				if (event.target === helpModal) {
+					helpModal.classList.remove('active');
+				}
+			});
+
+			// Close modal when pressing Escape key
+			document.addEventListener('keydown', function(event) {
+				if (event.key === 'Escape' && helpModal.classList.contains('active')) {
+					helpModal.classList.remove('active');
+				}
+			});
+		</script>
 
 	</body>
 </html>
