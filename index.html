@@ -229,7 +229,7 @@
 			}
 
 			/* HELP BUTTON - Question mark icon */
-			.help-button {
+			/* .help-button {
 				position: absolute;
 				top: 10px;
 				right: 10px;
@@ -252,7 +252,7 @@
 			.help-button:hover {
 				background-color: rgba(255, 255, 255, 0.3);
 				transform: scale(1.1);
-			}
+			} */
 
 			/* MODAL OVERLAY - Dark background when modal is open */
 			.modal-overlay {
@@ -348,31 +348,6 @@
 		     This class is removed once page fully loads -->
 
 		<!-- ============================================
-		     SIDEBAR NAVIGATION
-		     Fixed navigation menu on the left side
-		     ============================================ -->
-		<section id="sidebar">
-			<!-- id="sidebar": JavaScript uses this to find and control the sidebar -->
-			
-			<div class="inner">
-				<!-- Container for sidebar content -->
-				
-				<nav>
-					<!-- nav: Semantic HTML5 tag indicating navigation links -->
-					<ul>
-						<!-- Unordered list of navigation links -->
-						<li><a href="#intro">Play Develordle</a></li>
-						<!-- href="#intro": Links to element with id="intro" (smooth scroll) -->
-						
-						<li><a href="#one">About</a></li>
-						<li><a href="#two">How to Play</a></li>
-						<li><a href="#three">Contact</a></li>
-					</ul>
-				</nav>
-			</div>
-		</section>
-
-		<!-- ============================================
 		     WRAPPER
 		     Contains all main page content (everything except sidebar)
 		     ============================================ -->
@@ -399,7 +374,8 @@
 						<!-- Custom container for the entire game -->
 						
 						<!-- HELP BUTTON - Question mark icon -->
-						<button class="help-button" id="helpBtn" aria-label="How to Play">?</button>
+						<!-- <button class="help-button" id="helpBtn" aria-label="How to Play">?</button> -->
+						<button class="fa-solid fa-circle-question" id="helpBtn" aria-label="How to Play">?</button>
 						
 						<div class="message" id="message"></div>
 						<!-- Message area for game status (win/lose/errors)
@@ -433,137 +409,27 @@
 					</div>
 				</div>
 			</section>
-
-			<!-- ============================================
-			     ABOUT SECTION
-			     Information about the game
-			     ============================================ -->
-			<section id="one" class="wrapper style2 spotlights">
-				<!-- id="one": Allows sidebar link to jump here
-				     class="spotlights": Template class for image + text sections -->
-						<section>
-							<a href="#" class="image"><img src="images/pic01.jpg" alt="" data-position="center center" /></a>
-							<div class="content">
-								<div class="inner">
-									<h2>Developer Themed</h2>
-									<p>All words are related to programming, web development, and technology. Test your knowledge of developer terminology!</p>
-								</div>
-							</div>
-						</section>
-						<section>
-							<a href="#" class="image"><img src="images/pic02.jpg" alt="" data-position="top center" /></a>
-							<div class="content">
-								<div class="inner">
-									<h2>Daily Challenge</h2>
-									<p>A new word every day. Challenge yourself and improve your developer vocabulary.</p>
-								</div>
-							</div>
-						</section>
-						<section>
-							<a href="#" class="image"><img src="images/pic03.jpg" alt="" data-position="25% 25%" /></a>
-							<div class="content">
-								<div class="inner">
-									<h2>Share Your Score</h2>
-									<p>Compete with other developers and share your results with the community.</p>
-								</div>
-							</div>
-						</section>
-					</section>
-
-			<!-- ============================================
-			     HOW TO PLAY SECTION
-			     Instructions and rules
-			     ============================================ -->
-			<section id="two" class="wrapper style3 fade-up">
-				<div class="inner">
-					<h2>How to Play</h2>
-					<div class="features">
-						<!-- Template class for icon grid layout -->
-								<section>
-									<span class="icon solid major fa-keyboard"></span>
-									<h3>Type Your Guess</h3>
-									<p>Enter a 5-letter word related to development and programming.</p>
-								</section>
-								<section>
-									<span class="icon solid major fa-check" style="color: #538d4e;"></span>
-									<h3>Green = Correct</h3>
-									<p>Letter is in the word and in the correct position.</p>
-								</section>
-								<section>
-									<span class="icon solid major fa-circle" style="color: #b59f3b;"></span>
-									<h3>Yellow = Wrong Position</h3>
-									<p>Letter is in the word but in the wrong position.</p>
-								</section>
-								<section>
-									<span class="icon solid major fa-times" style="color: #3a3a3c;"></span>
-									<h3>Gray = Not in Word</h3>
-									<p>Letter is not in the word at all.</p>
-								</section>
-								<section>
-									<span class="icon solid major fa-trophy"></span>
-									<h3>6 Attempts</h3>
-									<p>You have 6 chances to guess the correct word.</p>
-								</section>
-								<section>
-									<span class="icon solid major fa-code"></span>
-									<h3>Developer Terms</h3>
-									<p>All words are tech and programming related!</p>
-								</section>
-							</div>
-						</div>
-					</section>
-
 			<!-- ============================================
 			     CONTACT SECTION
 			     Contact form (currently non-functional)
 			     ============================================ -->
-			<section id="three" class="wrapper style1 fade-up">
+			<section id="one" class="wrapper style1 fade-up">
 				<div class="inner">
-					<h2>Get in touch</h2>
-					<p>Have suggestions for words or features? Let us know!</p>
-					<div class="split style1">
-						<!-- Template class for side-by-side layout -->
 						<section>
-							<form method="post" action="#">
-								<!-- form: Collects user input
-								     method="post": How to send data (more secure than "get")
-								     action="#": Where to send data (currently nowhere - placeholder) -->
-										<div class="fields">
-											<div class="field half">
-												<label for="name">Name</label>
-												<input type="text" name="name" id="name" />
-											</div>
-											<div class="field half">
-												<label for="email">Email</label>
-												<input type="text" name="email" id="email" />
-											</div>
-											<div class="field">
-												<label for="message">Message</label>
-												<textarea name="message" id="message" rows="5"></textarea>
-											</div>
-										</div>
-										<ul class="actions">
-											<li><a href="" class="button submit">Send Message</a></li>
-										</ul>
-									</form>
-								</section>
-								<section>
-									<ul class="contact">
-										<li>
-											<h3>Social</h3>
-											<ul class="icons">
-												<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-												<li><a href="#" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
-												<li><a href="#" class="icon brands fa-linkedin-in"><span class="label">LinkedIn</span></a></li>
-											</ul>
-										</li>
+							<ul class="contact">
+								<li>
+									<h3>Social</h3>
+									<ul class="icons">
+										<li><a href="https://github.com/sandrakue/develordle" class="icon brands fa-github" target="_blank"><span class="label">GitHub</span></a></li>
+										<li><a href="https://linkedin.com/in/sandra-kue-2a6285126" class="icon brands fa-linkedin-in" target="_blank"><span class="label">LinkedIn</span></a></li>
 									</ul>
-								</section>
-							</div>
+								</li>
+							</ul>
+						</section>
 						</div>
-					</section>
+			</section>
 
-			</div>
+		</div>
 
 		<!-- ============================================
 		     HELP MODAL - Popup with game instructions
